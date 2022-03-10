@@ -1,8 +1,10 @@
 // ignore_for_file: unnecessary_new
 
 import 'package:app_delivery/src/models/response_api.dart';
+import 'package:app_delivery/src/models/user.dart';
 import 'package:app_delivery/src/provider/users_provider.dart';
 import 'package:app_delivery/src/utils/my_snackbar.dart';
+import 'package:app_delivery/src/utils/share_pref.dart';
 import 'package:flutter/material.dart';
 
 class LoginController {
@@ -12,6 +14,7 @@ class LoginController {
   TextEditingController passwordController = new TextEditingController();
 
   UsersProvider usersProvider = new UsersProvider();
+  SharePref _sharePref = new SharePref();
 
   Future init(BuildContext context) async {
     this.context = context;
@@ -27,9 +30,15 @@ class LoginController {
     //Trim nos elimina espacios en blanco en los textos capturaos
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
-
     ResponseApi responseApi = await usersProvider.login(email, password);
-    MySnackbar.show(context, responseApi.message);
+
+    if (responseApi.success) {
+      User user = User.fromJson(responseApi.data);
+      _sharePref.save('user', user.toJson());
+    } else {
+      MySnackbar.show(context, responseApi.message);
+    }
+
     print('Respuesta: ${responseApi.toJson()}');
   }
 }
