@@ -1,5 +1,8 @@
 // ignore_for_file: unnecessary_new
 
+import 'package:app_delivery/src/models/response_api.dart';
+import 'package:app_delivery/src/provider/users_provider.dart';
+import 'package:app_delivery/src/utils/my_snackbar.dart';
 import 'package:flutter/material.dart';
 
 class LoginController {
@@ -8,8 +11,11 @@ class LoginController {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-  Future init(BuildContext context) {
+  UsersProvider usersProvider = new UsersProvider();
+
+  Future init(BuildContext context) async {
     this.context = context;
+    await usersProvider.init(context);
   }
 
   //Metodo para ir a la pagna de registro
@@ -17,12 +23,13 @@ class LoginController {
     Navigator.pushNamed(context, 'register');
   }
 
-  void login() {
+  void login() async {
     //Trim nos elimina espacios en blanco en los textos capturaos
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    print("EMAIL $email");
-    print("PASSWORD $password");
+    ResponseApi responseApi = await usersProvider.login(email, password);
+    MySnackbar.show(context, responseApi.message);
+    print('Respuesta: ${responseApi.toJson()}');
   }
 }
