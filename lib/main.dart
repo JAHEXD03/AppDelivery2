@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 
+import 'src/pages/client/products/list/client_products_list_page.dart';
 import 'src/pages/login/login_page.dart';
 import 'src/pages/register/register_page.dart';
 
@@ -26,6 +27,8 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'login': (BuildContext context) => LoginPage(),
         'register': (BuildContext context) => RegisterPage(),
+        'client/products/list': (BuildContext context) =>
+            ClientProductsListPage()
       },
     );
   }

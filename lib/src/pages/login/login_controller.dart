@@ -19,6 +19,13 @@ class LoginController {
   Future init(BuildContext context) async {
     this.context = context;
     await usersProvider.init(context);
+
+    User user = User.fromJson(await _sharePref.read('user') ?? {});
+
+    if (user.sessionToken != null) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, 'client/products/list', (route) => false);
+    }
   }
 
   //Metodo para ir a la pagna de registro
@@ -32,13 +39,18 @@ class LoginController {
     String password = passwordController.text.trim();
     ResponseApi responseApi = await usersProvider.login(email, password);
 
+    print('Respuesta object: ${responseApi}');
+    print('Respuesta: ${responseApi.toJson()}');
+
     if (responseApi.success) {
       User user = User.fromJson(responseApi.data);
       _sharePref.save('user', user.toJson());
+
+      //EL METODO pushNamedAndRemoveUntil NOS SIRVE PARA ELIMINAR EL HISTORIAL DE PANTALLAS QUE HAY DETRAS
+      Navigator.pushNamedAndRemoveUntil(
+          context, 'client/products/list', (route) => false);
     } else {
       MySnackbar.show(context, responseApi.message);
     }
-
-    print('Respuesta: ${responseApi.toJson()}');
   }
 }

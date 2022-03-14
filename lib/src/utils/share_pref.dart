@@ -11,19 +11,19 @@ class SharePref {
 //METODO PARA ALMACENAR IMFORMACION EN EL STORAGE
   void save(String key, value) async {
     //PERMIRIRA USARE LOS METODOS DE SharedPreferences
-    final pref = await SharedPreferences.getInstance();
-    pref.setString(key, json.encode(value));
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(key, json.encode(value));
   }
 
 //METODO PARA LEEER LA INFO ALMACENADA
 
   Future<dynamic> read(String key) async {
-    final pref = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
 
-    if (pref.getString(key) == null) {
+    if (prefs.getString(key) == null) {
       return null;
     } else {
-      json.decode(pref.getString(key));
+      return json.decode(prefs.getString(key));
     }
   }
 
@@ -39,5 +39,10 @@ class SharePref {
   Future<bool> remove(String key) async {
     final pref = await SharedPreferences.getInstance();
     return pref.remove(key);
+  }
+
+  void logout(BuildContext context) async {
+    await remove('user');
+    Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
   }
 }

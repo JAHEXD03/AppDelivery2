@@ -1,4 +1,6 @@
+import 'package:app_delivery/src/pages/client/products/list/client_products_list_cntroller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ClientProductsListPage extends StatefulWidget {
   const ClientProductsListPage({Key key}) : super(key: key);
@@ -8,8 +10,26 @@ class ClientProductsListPage extends StatefulWidget {
 }
 
 class _ClientProductsListPageState extends State<ClientProductsListPage> {
+  ClientProductsListController _con = new ClientProductsListController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      _con.init(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: Center(
+          child: ElevatedButton(
+        onPressed: _con.logout,
+        child: Text('Cerrar sesion'),
+      )),
+    );
   }
 }
