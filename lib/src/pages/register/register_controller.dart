@@ -22,7 +22,7 @@ class RegisterController {
   }
 
   void backToLoginPage() {
-    Navigator.pushNamed(context, 'login');
+    Navigator.pop(context);
   }
 
   void register() async {
