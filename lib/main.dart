@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:app_delivery/src/pages/delivery/orders/list/delivery_orders_list_page.dart';
+import 'package:app_delivery/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:flutter/material.dart';
 
 import 'src/pages/client/products/list/client_products_list_page.dart';
@@ -28,7 +30,11 @@ class _MyAppState extends State<MyApp> {
         'login': (BuildContext context) => LoginPage(),
         'register': (BuildContext context) => RegisterPage(),
         'client/products/list': (BuildContext context) =>
-            ClientProductsListPage()
+            ClientProductsListPage(),
+        'delivevry/orders/list': (BuildContext context) =>
+            DeliveryOrdersListPage(),
+        'restaurant/products/list': (BuildContext context) =>
+            RestaurantOrdersListPage()
       },
     );
   }
