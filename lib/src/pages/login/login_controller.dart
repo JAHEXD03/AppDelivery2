@@ -46,9 +46,13 @@ class LoginController {
       User user = User.fromJson(responseApi.data);
       _sharePref.save('user', user.toJson());
 
-      //EL METODO pushNamedAndRemoveUntil NOS SIRVE PARA ELIMINAR EL HISTORIAL DE PANTALLAS QUE HAY DETRAS
-      Navigator.pushNamedAndRemoveUntil(
-          context, 'client/products/list', (route) => false);
+      if (user.roles.length > 1) {
+        Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
+      } else {
+        //EL METODO pushNamedAndRemoveUntil NOS SIRVE PARA ELIMINAR EL HISTORIAL DE PANTALLAS QUE HAY DETRAS
+        Navigator.pushNamedAndRemoveUntil(
+            context, user.roles[0].route, (route) => false);
+      }
     } else {
       MySnackbar.show(context, responseApi.message);
     }
