@@ -17,4 +17,8 @@ class RolesController {
 
     refresh();
   }
+
+  void goToPage(String route) {
+    Navigator.pushNamedAndRemoveUntil(context, route, (route) => false);
+  }
 }

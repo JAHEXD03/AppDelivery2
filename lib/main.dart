@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
             ClientProductsListPage(),
         'delivevry/orders/list': (BuildContext context) =>
             DeliveryOrdersListPage(),
-        'restaurant/products/list': (BuildContext context) =>
+        'restaurant/orders/list': (BuildContext context) =>
             RestaurantOrdersListPage()
       },
     );
