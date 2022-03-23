@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new, missing_return, duplicate_ignore, prefer_const_constructors, avoid_print
+
 import 'package:app_delivery/src/models/response_api.dart';
 import 'package:app_delivery/src/models/user.dart';
 import 'package:app_delivery/src/provider/users_provider.dart';

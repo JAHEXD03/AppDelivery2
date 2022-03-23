@@ -1,5 +1,7 @@
 // AQUI SE HARA LAS CONSULTAS http
 
+// ignore_for_file: avoid_print, missing_return, prefer_final_fields
+
 import 'dart:convert';
 
 import 'package:app_delivery/src/api/environment.dart';

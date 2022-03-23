@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_new
+// ignore_for_file: prefer_const_constructors, unnecessary_new, prefer_final_fields, avoid_unnecessary_containers
 
 import 'package:app_delivery/src/utils/my_colors.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ class _RegisterPage extends State<RegisterPage> {
 
   @override
   void initState() {
+    // ignore: todo
     // TODO: implement initState
     super.initState();
 

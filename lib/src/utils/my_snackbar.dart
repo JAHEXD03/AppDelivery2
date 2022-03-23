@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, unnecessary_new, missing_return
+
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';

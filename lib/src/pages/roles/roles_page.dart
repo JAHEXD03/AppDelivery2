@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, annotate_overrides, unnecessary_new, prefer_final_fields
+
 import 'package:app_delivery/src/models/rol.dart';
 import 'package:app_delivery/src/pages/roles/roles_controller.dart';
 import 'package:app_delivery/src/utils/my_colors.dart';
