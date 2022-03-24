@@ -22,7 +22,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _con.init(context);
+      _con.init(context, refresh);
     });
   }
 
@@ -71,7 +71,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Nombre user',
+                  '${_con.user?.name ?? ''}${_con.user?.lastname ?? ''}',
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
@@ -80,7 +80,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                   maxLines: 1,
                 ),
                 Text(
-                  'Emil',
+                  '${_con.user?.email ?? ''}',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[200],
@@ -90,7 +90,7 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                   maxLines: 1,
                 ),
                 Text(
-                  'phone',
+                  '${_con.user?.phone ?? ''}',
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[200],
@@ -103,7 +103,9 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
                   height: 60,
                   margin: EdgeInsets.only(top: 10),
                   child: FadeInImage(
-                    image: AssetImage('assets/img/no-image.png'),
+                    image: _con.user?.image != null
+                        ? NetworkImage(_con.user?.image)
+                        : ('assets/img/no-image.png'),
                     fit: BoxFit.contain,
                     fadeInDuration: Duration(milliseconds: 50),
                     placeholder: AssetImage('assets/img/no-image.png'),
@@ -112,18 +114,15 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
               ],
             ),
           ),
-          ListTile(
-            title: Text('Editar perfil'),
-            trailing: Icon(Icons.edit_outlined),
-          ),
-          ListTile(
-            title: Text('Mis pedidos'),
-            trailing: Icon(Icons.shopping_cart_outlined),
-          ),
-          ListTile(
-            title: Text('Selecciobnr rol'),
-            trailing: Icon(Icons.person_outline),
-          ),
+          _con.user != null
+              ? _con.user.roles.length > 1
+                  ? ListTile(
+                      onTap: _con.goToRoles,
+                      title: Text('Selecciobnr rol'),
+                      trailing: Icon(Icons.person_outline),
+                    )
+                  : Container()
+              : Container(),
           ListTile(
             onTap: _con.logout,
             title: Text('Cerrar session'),
@@ -132,5 +131,9 @@ class _DeliveryOrdersListPageState extends State<DeliveryOrdersListPage> {
         ],
       ),
     );
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }

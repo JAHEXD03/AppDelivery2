@@ -7,16 +7,6 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
 
 class User {
-  String id;
-  String name;
-  String lastname;
-  String email;
-  String phone;
-  String password;
-  String sessionToken;
-  String image;
-  List<Rol> roles = [];
-
 // Este es el constructor
   User(
       {this.id,
@@ -28,6 +18,16 @@ class User {
       this.sessionToken,
       this.image,
       this.roles});
+
+  String id;
+  String name;
+  String lastname;
+  String email;
+  String phone;
+  String password;
+  String sessionToken;
+  String image;
+  List<Rol> roles = [];
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["id"] is int ? json["id"].toString() : json["id"],
