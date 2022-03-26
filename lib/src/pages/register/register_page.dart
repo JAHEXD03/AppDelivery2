@@ -25,7 +25,7 @@ class _RegisterPage extends State<RegisterPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      _con.init(context);
+      _con.init(context, refresh);
     });
   }
 
@@ -109,11 +109,25 @@ class _RegisterPage extends State<RegisterPage> {
   }
 
   Widget _imageUser() {
-    return CircleAvatar(
-      backgroundImage: AssetImage('assets/img/user_profile_2.png'),
-      radius: 60,
-      backgroundColor: Colors.grey[200],
-    );
+    if (_con.imageFile != null) {
+      return GestureDetector(
+        onTap: _con.showAlertDialog,
+        child: CircleAvatar(
+          backgroundImage: FileImage(_con.imageFile),
+          radius: 60,
+          backgroundColor: Colors.grey[200],
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: _con.showAlertDialog,
+        child: CircleAvatar(
+          backgroundImage: AssetImage('assets/img/user_profile_2.png'),
+          radius: 60,
+          backgroundColor: Colors.grey[200],
+        ),
+      );
+    }
   }
 
   Widget _textFieldEmail() {
@@ -291,5 +305,9 @@ class _RegisterPage extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }

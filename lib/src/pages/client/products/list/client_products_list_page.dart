@@ -101,16 +101,7 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
                   maxLines: 1,
                 ),
                 Container(
-                  height: 60,
-                  margin: EdgeInsets.only(top: 10),
-                  child: FadeInImage(
-                    image: _con.user?.image != null
-                        ? NetworkImage(_con.user?.image)
-                        : ('assets/img/no-image.png'),
-                    fit: BoxFit.contain,
-                    fadeInDuration: Duration(milliseconds: 50),
-                    placeholder: AssetImage('assets/img/no-image.png'),
-                  ),
+                  child: _fadeInImage(),
                 )
               ],
             ),
@@ -140,6 +131,32 @@ class _ClientProductsListPageState extends State<ClientProductsListPage> {
         ],
       ),
     );
+  }
+
+  Widget _fadeInImage() {
+    if (_con.user?.image != null) {
+      return Container(
+        height: 60,
+        margin: EdgeInsets.only(top: 10),
+        child: FadeInImage(
+          image: NetworkImage(_con.user.image),
+          fit: BoxFit.contain,
+          fadeInDuration: Duration(milliseconds: 50),
+          placeholder: AssetImage('assets/img/no-image.png'),
+        ),
+      );
+    } else {
+      return Container(
+        height: 60,
+        margin: EdgeInsets.only(top: 10),
+        child: FadeInImage(
+          image: AssetImage('assets/img/no-image.png'),
+          fit: BoxFit.contain,
+          fadeInDuration: Duration(milliseconds: 50),
+          placeholder: AssetImage('assets/img/no-image.png'),
+        ),
+      );
+    }
   }
 
   void refresh() {
