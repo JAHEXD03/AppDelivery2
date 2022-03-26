@@ -3,11 +3,13 @@
 // ignore_for_file: avoid_print, missing_return, prefer_final_fields
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:app_delivery/src/api/environment.dart';
 import 'package:app_delivery/src/models/response_api.dart';
 import 'package:app_delivery/src/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -19,6 +21,27 @@ class UsersProvider {
 
   Future init(BuildContext context) {
     this.context = context;
+  }
+
+  Future<Stream> createWhitImae(User user, File image) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/register');
+      final request = http.MultipartRequest('POST', url);
+
+      if (image != null) {
+        request.files.add(
+          http.MultipartFile('image', http.ByteStream(image.openRead().cast()),
+              await image.length(),
+              filename: basename(image.path)),
+        );
+      }
+
+      request.fields['user'] = json.encode(user);
+      final response = await request.send(); //SE ENVIA LA PETICION
+      return response.stream.transform(utf8.decoder);
+    } catch (e) {
+      print('Error,$e');
+    }
   }
 
   Future<ResponseApi> create(User user) async {

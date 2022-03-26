@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_new, missing_return, duplicate_ignore, prefer_const_constructors, avoid_print
 
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:app_delivery/src/models/response_api.dart';
 import 'package:app_delivery/src/models/user.dart';
@@ -116,32 +117,40 @@ class RegisterController {
       MySnackbar.show(context, 'La contraseña debe tener almenos 6 caracteres');
       return;
     }
+    //Validar imagen
+    if (imageFile == null) {
+      MySnackbar.show(context, 'Selecciona una imagen');
+      return;
+    }
 
     // ignore: unnecessary_new
 
     User user = new User(
-        email: email,
-        name: name,
-        lastname: lastName,
-        phone: phone,
-        password: password);
+      email: email,
+      name: name,
+      lastname: lastName,
+      phone: phone,
+      password: password,
+    );
 
-    ResponseApi responseApi = await usersProvider.create(user);
-
-    MySnackbar.show(context, responseApi.message);
-
-    if (responseApi.success) {
-      Future.delayed(Duration(seconds: 3), () {
-        Navigator.pushReplacementNamed(context, 'login');
-      });
-    }
-
-    if (responseApi != null) {
+    Stream stream = await usersProvider.createWhitImae(user, imageFile);
+    stream.listen((res) {
+      // ResponseApi responseApi = await usersProvider.create(user);
+      ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
       print('RESPUESTA: ${responseApi.toJson()}');
-    } else {
-      print('LA RESPUESTA FUE NULA');
-    }
+      MySnackbar.show(context, responseApi.message);
 
-    print('RESPUESTA: ${responseApi.toJson()}');
+      if (responseApi.success) {
+        Future.delayed(Duration(seconds: 3), () {
+          Navigator.pushReplacementNamed(context, 'login');
+        });
+      }
+
+      if (responseApi != null) {
+        print('RESPUESTA: ${responseApi.toJson()}');
+      } else {
+        print('LA RESPUESTA FUE NULA');
+      }
+    });
   }
 }
