@@ -8,19 +8,18 @@ import 'package:app_delivery/src/models/user.dart';
 import 'package:app_delivery/src/provider/users_provider.dart';
 import 'package:app_delivery/src/utils/my_colors.dart';
 import 'package:app_delivery/src/utils/my_snackbar.dart';
+import 'package:app_delivery/src/utils/share_pref.dart';
 import 'package:flutter/material.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
-class RegisterController {
+class ClientUpdateController {
   BuildContext context;
 
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController passwordController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
-  TextEditingController confirmPasswordController = new TextEditingController();
 
   UsersProvider usersProvider = new UsersProvider();
 
@@ -31,7 +30,10 @@ class RegisterController {
 
   ProgressDialog _progressDialog;
 
-  Future init(BuildContext context, Function refresh) {
+  User user;
+  SharePref _sharePref = new SharePref();
+
+  Future init(BuildContext context, Function refresh) async {
     this.context = context;
     usersProvider.init(context);
 
@@ -40,6 +42,15 @@ class RegisterController {
     this._progressDialog = _progressDialog;
 
     _progressDialog = ProgressDialog(context: context);
+
+    //Se obtienen datos del usuario
+    user = User.fromJson(await _sharePref.read('user'));
+
+    nameController.text = user.name;
+    lastNameController.text = user.lastname;
+    phoneController.text = user.phone;
+
+    refresh();
   }
 
   void backToLoginPage() {
@@ -94,36 +105,17 @@ class RegisterController {
     );
   }
 
-  void register() async {
-    String email = emailController.text.trim();
+  void update() async {
     String name = nameController.text;
     String lastName = lastNameController.text;
     String phone = phoneController.text.trim();
-    String password = passwordController.text.trim();
-    String confirmPassword = confirmPasswordController.text.trim();
 
 // Validando que el ususario inserte todos los datos
-    if (email.isEmpty ||
-        name.isEmpty ||
-        lastName.isEmpty ||
-        phone.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
+    if (name.isEmpty || lastName.isEmpty || phone.isEmpty) {
       MySnackbar.show(context, 'Debes ingresar todos los campos');
       return;
     }
 
-    //Validando Password
-    if (confirmPassword != password) {
-      MySnackbar.show(context, 'Las contraseñas no coinciden');
-      return;
-    }
-
-    //Validar que la longitud del password sea menor a 6
-    if (password.length < 6) {
-      MySnackbar.show(context, 'La contraseña debe tener almenos 6 caracteres');
-      return;
-    }
     //Validar imagen
     if (imageFile == null) {
       MySnackbar.show(context, 'Selecciona una imagen');
@@ -134,16 +126,15 @@ class RegisterController {
 
     // ignore: unnecessary_new
 
-    User user = new User(
-      email: email,
+    User myUser = new User(
+      id: user.id,
       name: name,
       lastname: lastName,
       phone: phone,
-      password: password,
     );
 
-    Stream stream = await usersProvider.createWhitImae(user, imageFile);
-    stream.listen((res) {
+    Stream stream = await usersProvider.update(myUser, imageFile);
+    stream.listen((res) async {
       _progressDialog.close();
 
       // ResponseApi responseApi = await usersProvider.create(user);
@@ -151,10 +142,18 @@ class RegisterController {
       print('RESPUESTA: ${responseApi.toJson()}');
       MySnackbar.show(context, responseApi.message);
 
+      //Toast
+      //Fluttertoast.showToast(msg: responseApi.message);
+
       if (responseApi.success) {
-        Future.delayed(Duration(seconds: 3), () {
-          Navigator.pushReplacementNamed(context, 'login');
-        });
+        //
+        user =
+            await usersProvider.getById(myUser.id); //USUARIO OBTENIDO DE LA DB
+
+        _sharePref.save('user', user.toJson());
+
+        Navigator.pushNamedAndRemoveUntil(
+            context, 'client/products/list', (route) => false);
       }
 
       if (responseApi != null) {

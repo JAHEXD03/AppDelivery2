@@ -41,6 +41,7 @@ class SharePref {
     return pref.remove(key);
   }
 
+//METODO PARA CERRAR SESION
   void logout(BuildContext context) async {
     await remove('user');
     Navigator.pushNamedAndRemoveUntil(context, 'login', (route) => false);
