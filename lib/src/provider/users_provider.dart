@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:app_delivery/src/api/environment.dart';
 import 'package:app_delivery/src/models/response_api.dart';
 import 'package:app_delivery/src/models/user.dart';
+import 'package:app_delivery/src/utils/share_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
@@ -18,9 +19,13 @@ class UsersProvider {
   String _api = '/api/users';
 
   BuildContext context;
+  String token;
+  User sessionUser;
 
-  Future init(BuildContext context) {
+  Future init(BuildContext context, {User sessionUser}) {
     this.context = context;
+    //this.token = token;
+    this.sessionUser = sessionUser;
   }
 
   Future<Stream> createWhitImae(User user, File image) async {
@@ -47,8 +52,16 @@ class UsersProvider {
   Future<User> getById(String id) async {
     try {
       Uri url = Uri.http(_url, '$_api/findById/$id');
-      Map<String, String> headers = {'Content-type': 'application/json'};
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken
+      };
       final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        new SharePref().logout(context, sessionUser.id);
+      }
+
       final data = json.decode(res.body);
       User user = User.fromJson(data);
       return user;
@@ -63,6 +76,7 @@ class UsersProvider {
     try {
       Uri url = Uri.http(_url, '$_api/update');
       final request = http.MultipartRequest('PUT', url);
+      request.headers['Authorization'] = sessionUser.sessionToken;
 
       if (image != null) {
         request.files.add(
@@ -74,6 +88,11 @@ class UsersProvider {
 
       request.fields['user'] = json.encode(user);
       final response = await request.send(); //SE ENVIA LA PETICION
+
+      if (response.statusCode == 401) {
+        new SharePref().logout(context, sessionUser.id);
+      }
+
       return response.stream.transform(utf8.decoder);
     } catch (e) {
       print('Error,$e');
@@ -84,6 +103,22 @@ class UsersProvider {
     try {
       Uri url = Uri.http(_url, '$_api/register');
       String bodyParams = json.encode(user);
+      Map<String, String> headers = {'Content-type': 'application/json'};
+
+      final res = await http.post(url, headers: headers, body: bodyParams);
+      final data = json.decode(res.body);
+      ResponseApi responseApi = ResponseApi.fromJson(data);
+      return responseApi;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<ResponseApi> logout(String idUser) async {
+    try {
+      Uri url = Uri.http(_url, '$_api/logout');
+      String bodyParams = json.encode({'id': idUser});
       Map<String, String> headers = {'Content-type': 'application/json'};
 
       final res = await http.post(url, headers: headers, body: bodyParams);

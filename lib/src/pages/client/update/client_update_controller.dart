@@ -35,7 +35,6 @@ class ClientUpdateController {
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
-    usersProvider.init(context);
 
     this.refresh = refresh;
 
@@ -45,6 +44,9 @@ class ClientUpdateController {
 
     //Se obtienen datos del usuario
     user = User.fromJson(await _sharePref.read('user'));
+
+    //Se requiere que el usuario tenga un token valido
+    usersProvider.init(context, sessionUser: user);
 
     nameController.text = user.name;
     lastNameController.text = user.lastname;
@@ -116,22 +118,16 @@ class ClientUpdateController {
       return;
     }
 
-    //Validar imagen
-    if (imageFile == null) {
-      MySnackbar.show(context, 'Selecciona una imagen');
-      return;
-    }
-
     _progressDialog.show(max: 100, msg: 'Espere un momento....');
 
     // ignore: unnecessary_new
 
     User myUser = new User(
-      id: user.id,
-      name: name,
-      lastname: lastName,
-      phone: phone,
-    );
+        id: user.id,
+        name: name,
+        lastname: lastName,
+        phone: phone,
+        image: user.image);
 
     Stream stream = await usersProvider.update(myUser, imageFile);
     stream.listen((res) async {
@@ -149,7 +145,7 @@ class ClientUpdateController {
         //
         user =
             await usersProvider.getById(myUser.id); //USUARIO OBTENIDO DE LA DB
-
+        print('Usuario obtenido: ${user.toJson()}');
         _sharePref.save('user', user.toJson());
 
         Navigator.pushNamedAndRemoveUntil(
