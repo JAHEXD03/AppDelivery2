@@ -2,6 +2,7 @@
 
 import 'package:app_delivery/src/pages/client/update/client_update_page.dart';
 import 'package:app_delivery/src/pages/delivery/orders/list/delivery_orders_list_page.dart';
+import 'package:app_delivery/src/pages/restaurant/categories/create/restaurant_categories_create_page.dart';
 import 'package:app_delivery/src/pages/restaurant/orders/list/restaurant_orders_list_page.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,9 @@ class _MyAppState extends State<MyApp> {
         'delivevry/orders/list': (BuildContext context) =>
             DeliveryOrdersListPage(),
         'restaurant/orders/list': (BuildContext context) =>
-            RestaurantOrdersListPage()
+            RestaurantOrdersListPage(),
+        'restaurant/categories/create': (BuildContext context) =>
+            RestaurantCategoriesCreatePage()
       },
     );
   }

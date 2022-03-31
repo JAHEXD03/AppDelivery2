@@ -106,6 +106,11 @@ class _RestaurantOrdersListPageState extends State<RestaurantOrdersListPage> {
               ],
             ),
           ),
+          ListTile(
+            onTap: _con.goToCategorieCreate,
+            title: Text('Crear Categoria'),
+            trailing: Icon(Icons.list_alt),
+          ),
           _con.user != null
               ? _con.user.roles.length > 1
                   ? ListTile(
