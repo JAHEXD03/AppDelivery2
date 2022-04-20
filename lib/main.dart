@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'src/pages/client/products/list/client_products_list_page.dart';
 import 'src/pages/login/login_page.dart';
 import 'src/pages/register/register_page.dart';
+import 'src/pages/restaurant/products/create/restaurant_products_create_page.dart';
 import 'src/pages/roles/roles_page.dart';
 
 void main() {
@@ -41,7 +42,9 @@ class _MyAppState extends State<MyApp> {
         'restaurant/orders/list': (BuildContext context) =>
             RestaurantOrdersListPage(),
         'restaurant/categories/create': (BuildContext context) =>
-            RestaurantCategoriesCreatePage()
+            RestaurantCategoriesCreatePage(),
+        'restaurant/products/create': (BuildContext context) =>
+            RestaurantProductsCreatePage()
       },
     );
   }
