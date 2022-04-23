@@ -47,4 +47,29 @@ class CategoriesProvider {
       return null;
     }
   }
+
+  Future<List<Category>> getAll() async {
+    try {
+      Uri url = Uri.http(_url, '$_api/getAll');
+
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Authorization': sessionUser.sessionToken
+      };
+
+      final res = await http.get(url, headers: headers);
+
+      if (res.statusCode == 401) {
+        MySnackbar.show(context, 'Session expirada');
+        new SharePref().logout(context, sessionUser.id);
+      }
+
+      final data = json.decode(res.body);
+      Category category = Category.FromJsonList(data);
+      return category.toList;
+    } catch (e) {
+      print('Error:$e');
+      return [];
+    }
+  }
 }

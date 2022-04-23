@@ -14,6 +14,7 @@ class Category {
   String id;
   String name;
   String description;
+  List<Category> toList = [];
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
@@ -26,4 +27,15 @@ class Category {
         "name": name,
         "description": description,
       };
+
+  //convirtiendo de dynamic a list
+  Category.FromJsonList(List<dynamic> jsonList) {
+    if (jsonList == null) return;
+    {
+      jsonList.forEach((item) {
+        Category category = Category.fromJson(item);
+        toList.add(category);
+      });
+    }
+  }
 }

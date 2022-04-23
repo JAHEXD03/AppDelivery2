@@ -1,3 +1,4 @@
+import 'package:app_delivery/src/models/category.dart';
 import 'package:app_delivery/src/models/user.dart';
 import 'package:app_delivery/src/provider/categories_provider.dart';
 import 'package:app_delivery/src/utils/my_snackbar.dart';
@@ -17,6 +18,10 @@ class RestaurantProductsCreateController {
   User user;
   SharePref _sharePref = new SharePref();
 
+  String idCategory; //Almacenar el idde la categoria
+
+  List<Category> categories = [];
+
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
@@ -24,6 +29,13 @@ class RestaurantProductsCreateController {
     user = User.fromJson(await _sharePref.read('user'));
 
     _categoriesProvider.init(context, user);
+
+    getCategory();
+  }
+
+  void getCategory() async {
+    categories = await _categoriesProvider.getAll();
+    refresh();
   }
 
   void createProduct() async {
