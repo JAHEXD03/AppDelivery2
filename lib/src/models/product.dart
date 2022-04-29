@@ -13,7 +13,7 @@ class Product {
     this.image2,
     this.image3,
     this.price,
-    this.idCategory,
+    this.id_category,
     this.quantity,
   });
 
@@ -24,7 +24,7 @@ class Product {
   String image2;
   String image3;
   double price;
-  int idCategory;
+  int id_category;
   int quantity;
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -35,7 +35,7 @@ class Product {
         image2: json["image2"],
         image3: json["image3"],
         price: json["price"].toDouble(),
-        idCategory: json["idCategory"],
+        id_category: json["id_category"],
         quantity: json["quantity"],
       );
 
@@ -47,7 +47,7 @@ class Product {
         "image2": image2,
         "image3": image3,
         "price": price,
-        "idCategory": idCategory,
+        "id_category": id_category,
         "quantity": quantity,
       };
 }

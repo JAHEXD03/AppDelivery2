@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_delivery/src/models/category.dart';
 import 'package:app_delivery/src/models/product.dart';
+import 'package:app_delivery/src/models/response_api.dart';
 import 'package:app_delivery/src/models/user.dart';
 import 'package:app_delivery/src/provider/categories_provider.dart';
+import 'package:app_delivery/src/provider/products_provider.dart';
 import 'package:app_delivery/src/utils/my_colors.dart';
 import 'package:app_delivery/src/utils/my_snackbar.dart';
 import 'package:app_delivery/src/utils/share_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sn_progress_dialog/progress_dialog.dart';
 
 class RestaurantProductsCreateController {
   BuildContext context;
@@ -33,6 +37,10 @@ class RestaurantProductsCreateController {
   File imageFile2;
   File imageFile3;
 
+  ProductsProvider _productsProvider = new ProductsProvider();
+
+  ProgressDialog _progressDialog;
+
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
     this.refresh = refresh;
@@ -40,6 +48,10 @@ class RestaurantProductsCreateController {
     user = User.fromJson(await _sharePref.read('user'));
 
     _categoriesProvider.init(context, user);
+
+    _productsProvider.init(context, user);
+
+    _progressDialog = new ProgressDialog(context: context);
 
     getCategory();
   }
@@ -127,8 +139,39 @@ class RestaurantProductsCreateController {
         name: name,
         description: description,
         price: price,
-        idCategory: int.parse(idCategory));
+        id_category: int.parse(idCategory));
 
+    List<File> images = [];
+    images.add(imageFile1);
+    images.add(imageFile2);
+    images.add(imageFile3);
+
+    _progressDialog.show(max: 100, msg: 'Espere un momento');
+
+    Stream stream = await _productsProvider.create(product, images);
+    stream.listen((res) {
+      _progressDialog.close();
+
+      ResponseApi responseApi = ResponseApi.fromJson(json.decode(res));
+
+      MySnackbar.show(context, responseApi.message);
+
+      if (responseApi.success) {
+        resetValues();
+      }
+    });
     print('fProducto: ${product.toJson()}');
+  }
+
+  void resetValues() {
+    nameController.text = '';
+    descriptionController.text = '';
+    priceController.text = '0.0';
+    imageFile1 = null;
+    imageFile2 = null;
+    imageFile3 = null;
+    idCategory = null;
+
+    refresh();
   }
 }
