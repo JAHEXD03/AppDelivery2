@@ -46,6 +46,9 @@ class _MyAppState extends State<MyApp> {
         'restaurant/products/create': (BuildContext context) =>
             RestaurantProductsCreatePage()
       },
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(elevation: 0),
+      ),
     );
   }
 }
