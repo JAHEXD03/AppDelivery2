@@ -20,8 +20,9 @@ class ClientProductsListController {
 
   Future init(BuildContext context, Function refresh) async {
     this.context = context;
+    this.refresh = refresh;
     //Ya se tienen los datos del usuario
-    this.user = User.fromJson(await _sharePref.read('user'));
+    user = User.fromJson(await _sharePref.read('user'));
 
     _categoriesProvider.init(context, user);
 
@@ -35,8 +36,13 @@ class ClientProductsListController {
   }
 
   void getCategories() async {
-    categories = await _categoriesProvider.getAll();
-    refresh();
+    try {
+      categories = await _categoriesProvider.getAll();
+      refresh();
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
   }
 
   void openDrawer() {
